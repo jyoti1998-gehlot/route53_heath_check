@@ -1,6 +1,25 @@
+resource "aws_sns_topic" "sns" {
+  name = "user-updates-topic"
+}
 
-resource "aws_route53_health_check" "xyz" {
-  fqdn              = "3yb30eacl6.execute-api.us-west-2.amazonaws.com"
+resource "aws_cloudwatch_metric_alarm" "xyz2" {
+  alarm_name          = "foobar"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = "1"
+  metric_name         = "HealthCheckStatus"
+  namespace           = "AWS/Route53"
+  period              = "60"
+  statistic           = "Minimum"
+  alarm_description   = "This metric monitors ec2 cpu utilization"
+  actions_enabled     = "true"
+  alarm_actions       = [aws_sns_topic.sns.arn]
+  ok_actions          = [aws_sns_topic.sns.arn]
+}
+
+resource "aws_route53_health_check" "panda" {
+  fqdn              =     aws_api_gateway_rest_api.panda.id.execute-api.us-east-1.amazonaws.com
+  cloudwatch_alarm_name           = aws_cloudwatch_metric_alarm.xyz2.alarm_name
+  insufficient_data_health_status = "Healthy"
   port              = 443
   type              = "HTTPS"
   resource_path     = "/"
