@@ -17,7 +17,7 @@ resource "aws_cloudwatch_metric_alarm" "xyz2" {
 }
 
 resource "aws_route53_health_check" "panda" {
-  fqdn              =     aws_api_gateway_rest_api.panda.id.execute-api.us-east-1.amazonaws.com
+  fqdn              =     format("%s.%s",aws_api_gateway_rest_api.panda.id,"execute-api.us-west-2.amazonaws.com")
   cloudwatch_alarm_name           = aws_cloudwatch_metric_alarm.xyz2.alarm_name
   insufficient_data_health_status = "Healthy"
   port              = 443
@@ -28,6 +28,6 @@ resource "aws_route53_health_check" "panda" {
   cloudwatch_alarm_region = "us-west-2"
 
   tags = {
-    Name = "tf-test-health-check"
+    Name = "api-health-check"
   }
 }
