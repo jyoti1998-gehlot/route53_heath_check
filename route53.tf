@@ -14,6 +14,10 @@ resource "aws_cloudwatch_metric_alarm" "xyz2" {
   actions_enabled     = "true"
   alarm_actions       = [aws_sns_topic.sns.arn]
   ok_actions          = [aws_sns_topic.sns.arn]
+  
+    dimensions = {
+    HealthCheckId = aws_route53_health_check.panda.id
+  }
 }
 
 resource "aws_route53_health_check" "panda" {
